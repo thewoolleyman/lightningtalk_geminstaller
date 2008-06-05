@@ -1,0 +1,67 @@
+PREP: comment check_for_upgrade in rails app, unset RAILS_GEM_VERSION, comment merb-mailer in merb app, install all mechanize, mongrel versions
+intro, show web page
+
+gem server -d .
+(different tab)
+
+show config file, point out overridden source on install_options
+
+
+# VERIFY GEMS ARE INSTALLED
+geminstaller -s 
+geminstaller -s -gall
+
+# AUTO-INSTALL A NATIVE GEM (can't freeze this)
+gem list mongrel --version=1.1.4
+sudo gem uninstall mongrel --version=1.1.4
+geminstaller -s -gall
+
+# AUTO-UPGRADE A GEM
+gem list mechanize
+sudo gem uninstall mechanize --version=0.7.5
+geminstaller -s -gall  # doesn't install higher version
+uncomment check_for_upgrade: true
+geminstaller -s -gall
+recomment check_for_upgrade
+
+# AUTO INSTALL ON APP STARTUP
+script/server
+localhost:3000
+sudo gem uninstall mongrel --version=1.1.4
+script/server
+# see it installed
+
+# CONTROL RAILS GEM VERSION FROM ENV VAR
+look at rails version on homepage
+export RAILS_GEM_VERSION=1.99.0
+script/server
+look at rails version on homepage
+unset RAILS_GEM_VERSION, see homepage
+
+# PRINT ROGUE GEMS
+geminstaller --print-rogue-gems
+
+# MERB
+cd to sample merb app dir
+merb
+look at /env
+no mailer gem loaded
+add mailer to geminstaller.yml
+restart merb
+refresh /env
+see mailer gem loaded
+
+# REVIEW
+look at code
+geminstaller.yml
+point out override source on install options
+point out include_config
+geminstaller_rails.yml
+point out dynamic version based on ENV
+preinitializer.rb
+point out install/autogem
+
+works on windows
+
+root owned gems are PITA
+plan to make geminstaller install and manage everything under ~/.gems (configurable)
